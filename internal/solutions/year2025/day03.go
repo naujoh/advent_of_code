@@ -14,15 +14,7 @@ type Day03 struct{ solutions.BasePuzzle }
 func init() {
 	name := "Lobby"
 	stringDay := "03"
-
-	puzzle := &Day03{
-		BasePuzzle: solutions.BasePuzzle{
-			Name:        name,
-			PuzzleID:    year + "-" + stringDay,
-			PuzzleInput: "inputs/day" + stringDay + ".puzzle",
-			TestInput:   "inputs/day" + stringDay + ".test",
-		},
-	}
+	puzzle := &Day03{BasePuzzle: solutions.Create(name, year, stringDay)}
 	solutions.AddPuzzle(
 		puzzle.PuzzleID,
 		func(useTestInput bool) solutions.PuzzleSolver {
@@ -92,7 +84,7 @@ func (p *Day03) SolveSecondPart() string {
 // Solution implementation
 
 func (p *Day03) getBaterryBanks() [][]int {
-	input := p.LoadPuzzleInput(inputsFS)
+	input := p.LoadPuzzleInput()
 	input = strings.TrimSpace(input)
 	var banks [][]int
 

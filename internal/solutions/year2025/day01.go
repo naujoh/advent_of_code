@@ -17,14 +17,7 @@ func init() {
 	name := "Secret Entrance"
 	stringDay := "01"
 
-	puzzle := &Day01{
-		BasePuzzle: solutions.BasePuzzle{
-			Name:        name,
-			PuzzleID:    year + "-" + stringDay,
-			PuzzleInput: "inputs/day" + stringDay + ".puzzle",
-			TestInput:   "inputs/day" + stringDay + ".test",
-		},
-	}
+	puzzle := &Day01{BasePuzzle: solutions.Create(name, year, stringDay)}
 	solutions.AddPuzzle(
 		puzzle.PuzzleID,
 		func(useTestInput bool) solutions.PuzzleSolver {
@@ -129,7 +122,7 @@ func rotateDialToRight(doorDial dial, clicks int, isSecondPart bool) dial {
 }
 
 func (p *Day01) getRotationList() []rotation {
-	input := p.LoadPuzzleInput(inputsFS)
+	input := p.LoadPuzzleInput()
 	input = strings.TrimSpace(input)
 	lines := strings.Split(input, "\n")
 	rotations := []rotation{}

@@ -16,14 +16,7 @@ func init() {
 	name := "Gift Shop"
 	stringDay := "02"
 
-	puzzle := &Day02{
-		BasePuzzle: solutions.BasePuzzle{
-			Name:        name,
-			PuzzleID:    year + "-" + stringDay,
-			PuzzleInput: "inputs/day" + stringDay + ".puzzle",
-			TestInput:   "inputs/day" + stringDay + ".test",
-		},
-	}
+	puzzle := &Day02{BasePuzzle: solutions.Create(name, year, stringDay)}
 	solutions.AddPuzzle(
 		puzzle.PuzzleID,
 		func(useTestInput bool) solutions.PuzzleSolver {
@@ -172,7 +165,7 @@ func sumInvalidIDs(
 }
 
 func (p *Day02) getIDRanges() []idRange {
-	input := p.LoadPuzzleInput(inputsFS)
+	input := p.LoadPuzzleInput()
 	input = strings.TrimSpace(input)
 	ranges := []idRange{}
 
