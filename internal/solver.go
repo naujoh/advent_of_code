@@ -29,10 +29,15 @@ func Solve() {
 
 	slog.Info("Running puzzle", "name", puzzle.Name)
 
+	slog.Info("Running first part solution...")
 	firstPartResult := handleResult(solution.SolveFirstPart())
-	slog.Info("First part:", "solution", firstPartResult)
+	slog.Info("====")
 
+	slog.Info("Running second part solution...")
 	secondPartResult := handleResult(solution.SolveSecondPart())
+	slog.Info("====")
+
+	slog.Info("First part:", "solution", firstPartResult)
 	slog.Info("Second part:", "solution", secondPartResult)
 
 	slog.Info("Happy Advent! Hope you get all the gold stars *")
