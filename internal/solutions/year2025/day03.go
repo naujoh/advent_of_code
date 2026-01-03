@@ -27,61 +27,53 @@ func init() {
 func (p *Day03) GetPuzzle() solutions.BasePuzzle { return p.BasePuzzle }
 
 func (p *Day03) SolveFirstPart() string {
-	batteryBanks := p.getBaterryBanks()
-	joltageSum := 0
-
-	for _, bank := range batteryBanks {
-		maxIds := []int{0}
-		slog.Debug("Bank", "value", bank)
-		for i := 1; i < len(bank); i++ {
-			if bank[maxIds[len(maxIds)-1]] <= bank[i] {
-				maxIds = append(maxIds, i)
-			}
-		}
-		slog.Debug("Max idxs", "value", maxIds)
-
-		if len(maxIds) > 1 &&
-			(maxIds[len(maxIds)-1] == len(bank)-1 ||
-				bank[maxIds[len(maxIds)-1]] == bank[maxIds[len(maxIds)-2]]) {
-			slog.Debug(
-				"Greater pair",
-				"l",
-				bank[maxIds[len(maxIds)-2]],
-				"r",
-				bank[maxIds[len(maxIds)-1]],
-			)
-			number := strconv.Itoa(
-				bank[maxIds[len(maxIds)-2]],
-			) + strconv.Itoa(
-				bank[maxIds[len(maxIds)-1]],
-			)
-			joltageSum += utils.StrToInt(number)
-
-		} else {
-			maxRight := 0
-			for i := maxIds[len(maxIds)-1] + 1; i < len(bank); i++ {
-				maxRight = max(maxRight, bank[i])
-			}
-			slog.Debug(
-				"Greater pair",
-				"l",
-				bank[maxIds[len(maxIds)-1]],
-				"r",
-				maxRight,
-			)
-			number := strconv.Itoa(bank[maxIds[len(maxIds)-1]]) + strconv.Itoa(maxRight)
-			joltageSum += utils.StrToInt(number)
-		}
-
-	}
-	return strconv.Itoa(joltageSum)
+	return p.solve(2)
 }
 
 func (p *Day03) SolveSecondPart() string {
-	return ""
+	return p.solve(12)
 }
 
 // Solution implementation
+
+func (p *Day03) solve(k int) string {
+	batteryBanks := p.getBaterryBanks()
+	totalJoltage := 0
+	for i, bank := range batteryBanks {
+		l := len(bank)
+		number := []int{}
+		outputNumber := []string{}
+		digitPosition := 0
+
+		slog.Debug("Bank ", "No", i, "bank", bank)
+		for j, batteryValue := range bank {
+			for len(number) > 0 && number[len(number)-1] < batteryValue {
+				if l-j <= k { // i is at the las K numbers of bank
+					relativePosition := k - (l - j) + 1
+					if relativePosition > digitPosition {
+						break
+					}
+				}
+
+				number = number[:len(number)-1]
+				digitPosition--
+			}
+
+			if len(number) < k {
+				number = append(number, batteryValue)
+				digitPosition++
+				slog.Debug("Number", "n", number)
+			}
+		}
+		slog.Debug("----")
+
+		for _, d := range number {
+			outputNumber = append(outputNumber, strconv.Itoa(d))
+		}
+		totalJoltage += utils.StrToInt(strings.Join(outputNumber, ""))
+	}
+	return strconv.Itoa(totalJoltage)
+}
 
 func (p *Day03) getBaterryBanks() [][]int {
 	input := p.LoadPuzzleInput()
