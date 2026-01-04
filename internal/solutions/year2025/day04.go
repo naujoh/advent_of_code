@@ -57,7 +57,6 @@ func (p *Day04) SolveSecondPart() string {
 // Solution implementation
 
 func (p *Day04) removePaperRollsFromGrid(grid [][]string) int {
-	removedRollsCount := 0
 	rollsToRemove := [][]int{}
 
 	for i, row := range grid {
@@ -98,11 +97,10 @@ func (p *Day04) removePaperRollsFromGrid(grid [][]string) int {
 			}
 
 			if adjacentRollSum < 4 {
-				removedRollsCount++
 				rollsToRemove = append(rollsToRemove, []int{i, j})
 				slog.Debug(
 					"Adjacent rolls count < 4 found",
-					"total", removedRollsCount,
+					"total", len(rollsToRemove),
 				)
 			}
 		}
@@ -112,7 +110,7 @@ func (p *Day04) removePaperRollsFromGrid(grid [][]string) int {
 		grid[p[0]][p[1]] = "x"
 	}
 
-	return removedRollsCount
+	return len(rollsToRemove)
 }
 
 func (p *Day04) printGrid(grid [][]string) {
