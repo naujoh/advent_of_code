@@ -26,11 +26,43 @@ func (p *Day04) GetPuzzle() solutions.BasePuzzle { return p.BasePuzzle }
 
 func (p *Day04) SolveFirstPart() string {
 	grid := p.getRollPaperGrid()
-	accessibleRollsCount := 0
+
+	p.printGrid(grid)
+	removed := strconv.Itoa(p.removePaperRollsFromGrid(grid))
+	p.printGrid(grid)
+
+	return removed
+}
+
+func (p *Day04) SolveSecondPart() string {
+	grid := p.getRollPaperGrid()
+	var removed, totalRemoved int
+
+	for {
+		slog.Debug("Grid before remove")
+		p.printGrid(grid)
+		removed = p.removePaperRollsFromGrid(grid)
+		slog.Debug("Grid after remove")
+		p.printGrid(grid)
+		totalRemoved += removed
+
+		if removed <= 0 {
+			break
+		}
+	}
+
+	return strconv.Itoa(totalRemoved)
+}
+
+// Solution implementation
+
+func (p *Day04) removePaperRollsFromGrid(grid [][]string) int {
+	removedRollsCount := 0
+	rollsToRemove := [][]int{}
 
 	for i, row := range grid {
 		slog.Debug("Row", "idx", i)
-		for j := 0; j < len(row); j++ {
+		for j := range row {
 			if string(grid[i][j]) != "@" {
 				continue
 			}
@@ -66,29 +98,40 @@ func (p *Day04) SolveFirstPart() string {
 			}
 
 			if adjacentRollSum < 4 {
-				accessibleRollsCount++
+				removedRollsCount++
+				rollsToRemove = append(rollsToRemove, []int{i, j})
 				slog.Debug(
 					"Adjacent rolls count < 4 found",
-					"total", accessibleRollsCount,
+					"total", removedRollsCount,
 				)
 			}
 		}
 	}
-	return strconv.Itoa(accessibleRollsCount)
+
+	for _, p := range rollsToRemove {
+		grid[p[0]][p[1]] = "x"
+	}
+
+	return removedRollsCount
 }
 
-func (p *Day04) SolveSecondPart() string {
-	return ""
+func (p *Day04) printGrid(grid [][]string) {
+	for i, row := range grid {
+		slog.Debug("", "i", i, "row", row)
+	}
 }
 
-// Solution implementation
-
-func (p *Day04) getRollPaperGrid() []string {
+func (p *Day04) getRollPaperGrid() [][]string {
 	input := p.LoadPuzzleInput()
 	input = strings.TrimSpace(input)
-	grid := []string{}
+	grid := [][]string{}
 
-	grid = append(grid, strings.Split(input, "\n")...)
+	for i, row := range strings.Split(input, "\n") {
+		grid = append(grid, []string{})
+		for _, val := range row {
+			grid[i] = append(grid[i], string(val))
+		}
+	}
 
 	return grid
 }
